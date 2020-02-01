@@ -1,0 +1,17 @@
+body {
+    background-color: lightblue;
+    text-align: center;
+}
+img {
+    width: 200px;
+}
+img.custom {
+    border-radius: 5px;
+}
+ol {
+    list-style: none;
+}
+
+form {
+    margin: 50px;
+}
