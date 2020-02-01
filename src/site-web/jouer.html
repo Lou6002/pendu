@@ -1,0 +1,95 @@
+<html>
+    <head>
+        <title>Nouvelle partie - Le jeu du pendu de Lucie</title>
+        <meta name="description" content="Commencez une nouvelle partie du jeu du pendu">
+        <link rel="stylesheet" href="style.css">
+        <link rel="icon" href="favicon.ico">
+    </head>
+    <body>
+        <header>
+            <nav>
+                <a href="index.html">accueil</a> | <a href="jouer.html">Jouer</a> | <a href="games.html">mes autres jeux</a>
+            </nav>
+            <h1>Jeu du Pendu</h1>
+            <img class="custom" src="hangman.jpg" alt="Image du jeu pendu">
+        </header>
+        <section>
+            <form id="game">
+                Entrez une lettre :
+                <input type="text" id="letter" autocomplete="off" focus>
+                <button type="submit">jouer</button>
+            </form>
+            <div id="result"></div>
+            <form id="reset">
+                <button id="newGame">Nouvelle partie</button>
+            </form>
+        </section>
+        <script>
+            // mettre le cursor dans le champs de saisie
+            document.getElementById("letter").focus();
+
+            // quand on valide une lettre
+            document.getElementById("game").addEventListener('submit', event => {
+                // annuler l'evenement initial
+                event.preventDefault()
+
+                // obtenir la lettre saisie
+                var letter = document.getElementById("letter").value
+
+                if (letter.length > 1) {
+                    // si erreur
+                    document.getElementById("result").innerHTML = "merci de tapper une lettre !"
+                } else {
+                    console.log("http://localhost:3001/pendu/" + letter)
+
+                    // verifier la réponse en appelant le serveur web
+                    fetch("http://localhost:3001/pendu/" + letter)
+                        .then((response) => response.json())
+                        .then((response) => {
+
+                            // afficher le resultat
+                            document.getElementById("result").innerHTML = response.result + "<br> nb essai restant = " + response.nb
+
+                            // TODO: tester si le nombre d'essai est null (response.nb === 0) et afficher un message "vous avez perdu!"
+                            if (response.nb === 0){
+                                document.getElementById("result").innerHTML = "vous avez perdu!";
+                            }
+                            if (response.status === 'gagné'){
+                                document.getElementById("result").innerHTML = "vous avez gagné!";
+                            }
+                        });
+                    
+
+                    console.log("Clearing input");
+                    
+                    // effacer la lettre saisie
+                    document.getElementById("letter").value = "";
+                }
+            })
+
+            // quand on clique sur le bouton reset
+            document.getElementById("reset").addEventListener('submit', event => {
+                // annuler l'evenement initial
+                event.preventDefault()
+
+                // dire au serveur de reset la partie
+                fetch("http://localhost:3001/pendu/init")
+
+                // tout effacer la lettre et la réponse de la partie précédente
+                document.getElementById("letter").value = ""
+                document.getElementById("result").innerHTML = ""
+            })
+            document.getElementById("newGame").addEventListener('submit', event => {
+                // annuler l'evenement initial
+                event.preventDefault()
+
+                // dire au serveur de reset la partie
+                fetch("http://localhost:3001/pendu/init")
+
+                // tout effacer la lettre et la réponse de la partie précédente
+                document.getElementById("letter").value = ""
+                document.getElementById("result").innerHTML = ""
+            })
+        </script>
+    </body>
+</html>
