@@ -33,6 +33,7 @@ app.use(cors())
 app.use(express.static('src/site-web'));
 
 app.get('/pendu/init', function (req, res) {
+  mot = mots[getRandomInt(mots.length-1)];
   result = [];
   nb = 10;
   for (let i = 0; i < mot.length; i++) {
